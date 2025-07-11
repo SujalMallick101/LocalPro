@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require("./routes/paymentRoutes")
+const reviewRoutes = require("./routes/reviewRoutes")
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/services", serviceRoutes)
 app.use("/api/bookings", bookingRoutes)
 app.use("/api/payments", paymentRoutes)
+app.use("/api/reviews", reviewRoutes)
 
 // Start server
 const PORT = process.env.PORT || 5000;
