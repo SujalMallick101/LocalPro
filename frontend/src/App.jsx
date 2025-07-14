@@ -6,11 +6,13 @@ import Services from "./pages/Services";
 import BookService from "./pages/BookService";
 import MyBooking from "./pages/MyBooking";
 import Dashboard from "./pages/Dashboard"; // ✅ This is for '/'
+import { Home } from "lucide-react";
 
 function App() {
   return (
     <Routes>
       {/* Public routes */}
+      {/* <Route path="/" element={<Home/>} /> */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 

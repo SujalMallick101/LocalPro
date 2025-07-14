@@ -1,7 +1,8 @@
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
 import { AuthContext } from "../context/AuthContext";
+import { Mail, Lock } from "lucide-react";
 
 const Login = () => {
   const { login } = useContext(AuthContext);
@@ -23,42 +24,64 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 shadow-lg rounded bg-white">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Login</h2>
-      {error && <p className="text-red-600 text-sm mb-2">{error}</p>}
+    <div className="min-h-screen bg-base-200 flex items-center justify-center">
+      <div className="w-full max-w-md p-6 bg-base-100 rounded-xl shadow-lg">
+        <h2 className="text-3xl font-bold text-center mb-6">Login to LocalPro</h2>
 
-      <form onSubmit={handleLogin} className="space-y-3">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border rounded"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border rounded"
-          required
-        />
+        {error && (
+          <div className="alert alert-error mb-4 text-sm">
+            {error}
+          </div>
+        )}
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Login
-        </button>
-      </form>
+        <form onSubmit={handleLogin} className="space-y-4">
+          {/* Email */}
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text flex items-center gap-2">
+                <Mail className="w-4 h-4" /> Email
+              </span>
+            </div>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              className="input input-bordered w-full"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </label>
 
-      <p className="text-sm text-center text-gray-600 mt-4">
-        Don’t have an account?{" "}
-        <a href="/register" className="text-blue-600 hover:underline">
-          Register
-        </a>
-      </p>
+          {/* Password */}
+          <label className="form-control w-full">
+            <div className="label">
+              <span className="label-text flex items-center gap-2">
+                <Lock className="w-4 h-4" /> Password
+              </span>
+            </div>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="input input-bordered w-full"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </label>
+
+          {/* Submit Button */}
+          <button type="submit" className="btn btn-primary w-full">
+            Login
+          </button>
+        </form>
+
+        <p className="text-sm text-center text-gray-600 mt-6">
+          Don’t have an account?{" "}
+          <Link to="/register" className="text-primary hover:underline">
+            Register here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };
