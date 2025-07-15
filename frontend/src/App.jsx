@@ -3,7 +3,7 @@ import PrivateRoute from "./components/PrivateRoute";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
-import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyBooking from "./pages/MyBooking";
@@ -23,7 +23,7 @@ function App() {
 
         {/* Shared Auth Route (Dashboard) */}
         <Route element={<PrivateRoute allowedRoles={["customer", "provider", "admin"]} />}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<AdminDashboard />} />
         </Route>
 
         {/* Customer-Only Routes */}
@@ -40,7 +40,7 @@ function App() {
 
         {/* Admin Routes - placeholder */}
         <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
+          { <Route path="/admin/dashboard" element={<AdminDashboard />} /> }
         </Route>
       </Routes>
     </>
