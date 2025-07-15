@@ -1,33 +1,49 @@
 import { Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
+import PrivateRoute from "./components/PrivateRoute";
+
+// Pages
+import LandingPage from "./pages/LandingPage";
+import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Services from "./pages/Services";
-import BookService from "./pages/BookService";
 import MyBooking from "./pages/MyBooking";
-import Dashboard from "./pages/Dashboard"; // ✅ This is for '/'
-import { Home } from "lucide-react";
+import PayBooking from "./pages/PayBooking";
+import LeaveReview from "./pages/LeaveReview";
+import ProviderProfile from "./pages/ProviderProfile";
 
 function App() {
   return (
-    <Routes>
-      {/* Public routes */}
-      {/* <Route path="/" element={<Home/>} /> */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/provider/:id" element={<ProviderProfile />} />
 
-      <Route path="/" element={<Dashboard />} />
+        {/* Shared Auth Route (Dashboard) */}
+        <Route element={<PrivateRoute allowedRoles={["customer", "provider", "admin"]} />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
 
-      {/* Protected routes with layout (Navbar + Sidebar) */}
-      <Route element={<Layout />}>
-        <Route path="/services" element={<Services />} />
-        <Route path="/book-service" element={<BookService />} />
-        <Route path="/bookings" element={<MyBooking />} />
-      </Route>
+        {/* Customer-Only Routes */}
+        <Route element={<PrivateRoute allowedRoles={["customer"]} />}>
+          <Route path="/bookings" element={<MyBooking />} />
+          <Route path="/pay/:id" element={<PayBooking />} />
+          <Route path="/review/:id" element={<LeaveReview />} />
+        </Route>
 
-      {/* 404 fallback (optional) */}
-      <Route path="*" element={<div>404 - Page Not Found</div>} />
-    </Routes>
+        {/* Provider-Only Routes */}
+        <Route element={<PrivateRoute allowedRoles={["provider"]} />}>
+          <Route path="/my-jobs" element={<MyBooking />} />
+        </Route>
+
+        {/* Admin Routes - placeholder */}
+        <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+          {/* <Route path="/admin/dashboard" element={<AdminDashboard />} /> */}
+        </Route>
+      </Routes>
+    </>
   );
 }
 
