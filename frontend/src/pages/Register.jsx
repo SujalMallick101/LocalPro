@@ -32,8 +32,14 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       });
+
       login({ ...data.user, token: data.token });
-      navigate("/");
+
+      // ✅ Redirect based on role
+      const role = data.user.role;
+      if (role === "provider") navigate("/my-jobs");
+      else if (role === "admin") navigate("/admin/dashboard");
+      else navigate("/dashboard"); // default for customer
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     }

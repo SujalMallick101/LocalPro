@@ -1,8 +1,19 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { LogIn, UserPlus, SearchCheck } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
+import { useContext} from "react";
+import { Navigate } from "react-router-dom";
 
 const LandingPage = () => {
+  const { user } = useContext(AuthContext);
+
+  if (user) {
+    if (user.role === "admin") return <Navigate to="/admin/dashboard" />;
+    if (user.role === "provider") return <Navigate to="/dashboard" />;
+    if (user.role === "customer") return <Navigate to="/dashboard" />;
+  }
+
   return (
     <>
       <Navbar />
