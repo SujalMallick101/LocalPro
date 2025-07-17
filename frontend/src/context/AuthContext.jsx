@@ -1,29 +1,35 @@
 import { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(
-        JSON.parse(localStorage.getItem("user")) || null
-    );
-    const navigate = useNavigate(); 
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-    const login = (data) => {
-        localStorage.setItem("user", JSON.stringify(data));
-        setUser(data);
-    };
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
-    const logout = () => {
-        localStorage.removeItem("user");
-        setUser(null);
-        navigate("/");
-    };
+  const login = (data) => {
+    localStorage.setItem("user", JSON.stringify(data));
+    localStorage.setItem("token", data.token); // optional
+    setUser(data);
+  };
 
-    return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/"); // ✅ Go to landing page after logout
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
