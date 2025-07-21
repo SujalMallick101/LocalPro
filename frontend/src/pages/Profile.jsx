@@ -20,7 +20,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const { data } = await API.get("/users/me");
+        const { data } = await API.get("/auth/me");
         setProfile(data);
       } catch (err) {
         setError("Failed to load profile");

@@ -1,7 +1,9 @@
 import { useEffect, useState, useContext } from "react";
-import API from "../services/api";
 import { useNavigate, Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import API from "../services/api";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import {
   Briefcase,
   Layers,
@@ -23,7 +25,6 @@ const BookService = () => {
   const [selectedService, setSelectedService] = useState("");
   const [subServices, setSubServices] = useState([]);
   const [selectedSubService, setSelectedSubService] = useState("");
-
   const [providers, setProviders] = useState([]);
   const [providerId, setProviderId] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
@@ -80,131 +81,152 @@ const BookService = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-base-100 rounded-xl shadow-md mt-6">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        <Briefcase className="w-6 h-6" /> Book a Service
-      </h2>
+    <div className="min-h-screen flex flex-col bg-base-200">
+      {/* Navbar */}
+      <header className="sticky top-0 z-50 bg-base-100 shadow-sm">
+        <Navbar />
+      </header>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Service */}
-        <label className="form-control w-full">
-          <div className="label">
-            <span className="label-text flex items-center gap-2">
-              <Layers className="w-4 h-4" /> Service
-            </span>
-          </div>
-          <select
-            className="select select-bordered w-full"
-            required
-            onChange={(e) => handleServiceSelect(e.target.value)}
-          >
-            <option value="">Select a service</option>
-            {services.map((s) => (
-              <option key={s._id} value={s._id}>
-                {s.name}
-              </option>
-            ))}
-          </select>
-        </label>
+      {/* Sidebar + Content */}
+      <div className="flex flex-1 min-h-0">
+        {/* Sidebar on left */}
+        <aside className="w-64 hidden md:block bg-base-100 border-r border-base-300">
+          <Sidebar />
+        </aside>
 
-        {/* Sub-service */}
-        <label className="form-control w-full">
-          <div className="label">
-            <span className="label-text flex items-center gap-2">
-              <Layers className="w-4 h-4" /> Sub-service
-            </span>
-          </div>
-          <select
-            className="select select-bordered w-full"
-            required
-            onChange={(e) => setSelectedSubService(e.target.value)}
-            value={selectedSubService}
-          >
-            <option value="">Select a sub-service</option>
-            {subServices.map((sub, i) => (
-              <option key={i} value={sub.name}>
-                {sub.name} - ₹{sub.price} ({sub.duration})
-              </option>
-            ))}
-          </select>
-        </label>
+        {/* Main Booking Form */}
+        <main className="flex-1 p-6 overflow-y-auto">
+          <div className="max-w-3xl mx-auto bg-base-100 rounded-xl shadow-md p-6">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Briefcase className="w-6 h-6" /> Book a Service
+            </h2>
 
-        {/* Provider */}
-        <label className="form-control w-full">
-          <div className="label">
-            <span className="label-text flex items-center gap-2">
-              <User className="w-4 h-4" /> Provider
-            </span>
-          </div>
-          <select
-            className="select select-bordered w-full"
-            required
-            onChange={(e) => setProviderId(e.target.value)}
-          >
-            <option value="">Select a provider</option>
-            {providers.map((p) => (
-              <option key={p._id} value={p._id}>
-                {p.name} ({p.email})
-              </option>
-            ))}
-          </select>
-        </label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Service */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text flex items-center gap-2">
+                    <Layers className="w-4 h-4" /> Service
+                  </span>
+                </div>
+                <select
+                  className="select select-bordered w-full"
+                  required
+                  onChange={(e) => handleServiceSelect(e.target.value)}
+                >
+                  <option value="">Select a service</option>
+                  {services.map((s) => (
+                    <option key={s._id} value={s._id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-        {/* Date and Time */}
-        <div className="flex flex-col md:flex-row gap-4">
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text flex items-center gap-2">
-                <Calendar className="w-4 h-4" /> Date
-              </span>
-            </div>
-            <input
-              type="date"
-              className="input input-bordered w-full"
-              required
-              onChange={(e) => setScheduledDate(e.target.value)}
-            />
-          </label>
+              {/* Sub-service */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text flex items-center gap-2">
+                    <Layers className="w-4 h-4" /> Sub-service
+                  </span>
+                </div>
+                <select
+                  className="select select-bordered w-full"
+                  required
+                  onChange={(e) => setSelectedSubService(e.target.value)}
+                  value={selectedSubService}
+                >
+                  <option value="">Select a sub-service</option>
+                  {subServices.map((sub, i) => (
+                    <option key={i} value={sub.name}>
+                      {sub.name} - ₹{sub.price} ({sub.duration})
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <label className="form-control w-full">
-            <div className="label">
-              <span className="label-text flex items-center gap-2">
-                <Clock className="w-4 h-4" /> Time
-              </span>
-            </div>
-            <input
-              type="time"
-              className="input input-bordered w-full"
-              required
-              onChange={(e) => setScheduledTime(e.target.value)}
-            />
-          </label>
-        </div>
+              {/* Provider */}
+              <label className="form-control w-full">
+                <div className="label">
+                  <span className="label-text flex items-center gap-2">
+                    <User className="w-4 h-4" /> Provider
+                  </span>
+                </div>
+                <select
+                  className="select select-bordered w-full"
+                  required
+                  onChange={(e) => setProviderId(e.target.value)}
+                >
+                  <option value="">Select a provider</option>
+                  {providers.map((p) => (
+                    <option key={p._id} value={p._id}>
+                      {p.name} ({p.email})
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-        {/* Address Inputs */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {["street", "city", "state", "pincode"].map((field) => (
-            <label className="form-control w-full" key={field}>
-              <div className="label">
-                <span className="label-text flex items-center gap-2">
-                  <MapPin className="w-4 h-4" /> {field.charAt(0).toUpperCase() + field.slice(1)}
-                </span>
+              {/* Date and Time */}
+              <div className="flex flex-col md:flex-row gap-4">
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text flex items-center gap-2">
+                      <Calendar className="w-4 h-4" /> Date
+                    </span>
+                  </div>
+                  <input
+                    type="date"
+                    className="input input-bordered w-full"
+                    required
+                    onChange={(e) => setScheduledDate(e.target.value)}
+                  />
+                </label>
+
+                <label className="form-control w-full">
+                  <div className="label">
+                    <span className="label-text flex items-center gap-2">
+                      <Clock className="w-4 h-4" /> Time
+                    </span>
+                  </div>
+                  <input
+                    type="time"
+                    className="input input-bordered w-full"
+                    required
+                    onChange={(e) => setScheduledTime(e.target.value)}
+                  />
+                </label>
               </div>
-              <input
-                type="text"
-                className="input input-bordered"
-                placeholder={`Enter ${field}`}
-                onChange={(e) => setAddress({ ...address, [field]: e.target.value })}
-              />
-            </label>
-          ))}
-        </div>
 
-        {/* Submit Button */}
-        <button type="submit" className="btn btn-primary w-full mt-4">
-          <Send className="w-4 h-4 mr-2" /> Book Now
-        </button>
-      </form>
+              {/* Address */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {["street", "city", "state", "pincode"].map((field) => (
+                  <label className="form-control w-full" key={field}>
+                    <div className="label">
+                      <span className="label-text flex items-center gap-2">
+                        <MapPin className="w-4 h-4" />{" "}
+                        {field.charAt(0).toUpperCase() + field.slice(1)}
+                      </span>
+                    </div>
+                    <input
+                      type="text"
+                      className="input input-bordered"
+                      placeholder={`Enter ${field}`}
+                      onChange={(e) =>
+                        setAddress({ ...address, [field]: e.target.value })
+                      }
+                    />
+                  </label>
+                ))}
+              </div>
+
+              {/* Submit */}
+              <button type="submit" className="btn btn-primary w-full mt-4">
+                <Send className="w-4 h-4 mr-2" /> Book Now
+              </button>
+            </form>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

@@ -14,6 +14,7 @@ import ProviderDashboard from "./pages/ProviderDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import BookService from "./pages/BookService";
 import Profile from "./pages/Profile";
+import Reviews from "./pages/Reviews";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/review/:id" element={<LeaveReview />} />
         <Route path="/book-service" element={<BookService />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/reviews" element={<Reviews />} />
       </Route>
 
       {/* Provider Dashboard */}
