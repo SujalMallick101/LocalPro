@@ -15,6 +15,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import BookService from "./pages/BookService";
 import Profile from "./pages/Profile";
 import Reviews from "./pages/Reviews";
+import MyJobs from "./pages/MyJobs";
 
 function App() {
   return (
@@ -25,6 +26,11 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/provider/:id" element={<ProviderProfile />} />
 
+      {/* ✅ Profile Route – accessible to all authenticated users */}
+      <Route element={<PrivateRoute allowedRoles={["customer", "provider", "admin"]} />}>
+        <Route path="/profile" element={<Profile />} />
+      </Route>
+
       {/* Customer Dashboard */}
       <Route element={<PrivateRoute allowedRoles={["customer"]} />}>
         <Route path="/dashboard" element={<CustomerDashboard />} />
@@ -32,14 +38,13 @@ function App() {
         <Route path="/pay/:id" element={<PayBooking />} />
         <Route path="/review/:id" element={<LeaveReview />} />
         <Route path="/book-service" element={<BookService />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/reviews" element={<Reviews />} />
       </Route>
 
       {/* Provider Dashboard */}
       <Route element={<PrivateRoute allowedRoles={["provider"]} />}>
-        <Route path="/dashboard" element={<ProviderDashboard />} />
-        <Route path="/my-jobs" element={<MyBooking />} />
+        <Route path="/provider/dashboard" element={<ProviderDashboard />} />
+        <Route path="/my-jobs" element={<MyJobs />} />
       </Route>
 
       {/* Admin Dashboard */}

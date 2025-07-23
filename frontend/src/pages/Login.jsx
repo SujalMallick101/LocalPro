@@ -18,11 +18,8 @@ const Login = () => {
       const { data } = await API.post("/auth/login", { email, password });
       login({ ...data.user, token: data.token });
 
-      // ✅ Redirect user based on role
-      const role = data.user.role;
-      if (role === "admin") navigate("/admin/dashboard");
-      else if (role === "provider") navigate("/my-jobs");
-      else navigate("/dashboard");
+      // ✅ Redirect to "/" — let LandingPage handle role-based redirect
+      navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
     }

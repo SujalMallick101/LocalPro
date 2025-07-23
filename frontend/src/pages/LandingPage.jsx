@@ -1,18 +1,19 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
-import { LogIn, UserPlus, SearchCheck } from "lucide-react";
+import { useEffect, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { useContext} from "react";
-import { Navigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import { LogIn, UserPlus, Search } from "lucide-react";
 
 const LandingPage = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-  if (user) {
-    if (user.role === "admin") return <Navigate to="/admin/dashboard" />;
-    if (user.role === "provider") return <Navigate to="/dashboard" />;
-    if (user.role === "customer") return <Navigate to="/dashboard" />;
-  }
+  // 🔁 Redirect logic based on logged-in user role
+  useEffect(() => {
+    if (user?.role === "admin") navigate("/admin/dashboard");
+    else if (user?.role === "provider") navigate("/provider/dashboard");
+    else if (user?.role === "customer") navigate("/dashboard");
+  }, [user, navigate]);
 
   return (
     <>
@@ -22,20 +23,26 @@ const LandingPage = () => {
           <h1 className="text-4xl md:text-5xl font-bold text-primary">
             Welcome to <span className="text-accent">LocalPro</span>
           </h1>
+
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Book trusted local service providers near you — from electricians to beauticians.
             Safe, verified, and easy.
           </p>
 
           <div className="flex flex-col md:flex-row gap-4 justify-center mt-6">
-            <Link to="/login" className="btn btn-primary btn-lg flex items-center gap-2">
-              <LogIn className="w-5 h-5" /> Login
+            <Link to="/login" className="btn btn-primary btn-lg gap-2">
+              <LogIn className="w-5 h-5" />
+              Login
             </Link>
-            <Link to="/register" className="btn btn-outline btn-accent btn-lg flex items-center gap-2">
-              <UserPlus className="w-5 h-5" /> Get Started
+
+            <Link to="/register" className="btn btn-outline btn-accent btn-lg gap-2">
+              <UserPlus className="w-5 h-5" />
+              Get Started
             </Link>
-            <Link to="/provider/preview-id" className="btn btn-outline btn-info btn-lg flex items-center gap-2">
-              <SearchCheck className="w-5 h-5" /> Explore Providers
+
+            <Link to="/explore" className="btn btn-outline btn-info btn-lg gap-2">
+              <Search className="w-5 h-5" />
+              Explore Providers
             </Link>
           </div>
         </div>

@@ -58,7 +58,7 @@ exports.login = async (req, res) => {
   }
 };
 
-// ✅ Get current logged-in user
+// Get current logged-in user
 exports.getCurrentUser = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).select("-password");
@@ -67,5 +67,28 @@ exports.getCurrentUser = async (req, res) => {
   } catch (err) {
     console.error("Error fetching user:", err.message);
     res.status(500).json({ message: "Failed to load user profile" });
+  }
+};
+
+// ✅ Update user profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.name = req.body.name || user.name;
+    user.phone = req.body.phone || user.phone;
+
+    await user.save();
+
+    res.json({
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+      role: user.role,
+    });
+  } catch (err) {
+    console.error("Error updating profile:", err.message);
+    res.status(500).json({ message: "Profile update failed" });
   }
 };

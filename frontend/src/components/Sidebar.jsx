@@ -21,8 +21,16 @@ const Sidebar = () => {
 
   if (!user) return null;
 
+  // Dynamically set home path based on role
+  const homePath =
+    user.role === "admin"
+      ? "/admin/dashboard"
+      : user.role === "provider"
+      ? "/provider/dashboard"
+      : "/dashboard";
+
   const common = [
-    { name: "Home", path: "/dashboard", icon: <Home className="w-5 h-5" /> },
+    { name: "Home", path: homePath, icon: <Home className="w-5 h-5" /> },
   ];
 
   const customerNav = [
@@ -48,7 +56,6 @@ const Sidebar = () => {
   const logoutItem = [
     {
       name: "Logout",
-      // path: "/login",
       icon: <LogOut className="w-5 h-5" />,
       action: logout,
     },
