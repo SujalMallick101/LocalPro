@@ -12,6 +12,7 @@ import {
   ClipboardList,
   UserCheck,
   LogOut,
+  PlusCircle,
 } from "lucide-react";
 import { AuthContext } from "../context/AuthContext";
 
@@ -26,8 +27,8 @@ const Sidebar = () => {
     user.role === "admin"
       ? "/admin/dashboard"
       : user.role === "provider"
-      ? "/provider/dashboard"
-      : "/dashboard";
+        ? "/provider/dashboard"
+        : "/dashboard";
 
   const common = [
     { name: "Home", path: homePath, icon: <Home className="w-5 h-5" /> },
@@ -40,11 +41,12 @@ const Sidebar = () => {
   ];
 
   const providerNav = [
+    { name: "Add Service", path: "/provider/add-service", icon: <PlusCircle className="w-5 h-5" /> },
     { name: "My Jobs", path: "/my-jobs", icon: <ClipboardList className="w-5 h-5" /> },
+    { name: "Reviews", path: "/provider/reviews", icon: <Star className="w-5 h-5" /> },
   ];
 
   const adminNav = [
-    { name: "Admin Dashboard", path: "/admin/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
     { name: "Manage Users", path: "/admin/users", icon: <Users className="w-5 h-5" /> },
     { name: "Manage Services", path: "/admin/services", icon: <Wrench className="w-5 h-5" /> },
   ];
@@ -79,11 +81,10 @@ const Sidebar = () => {
             <Link
               to={item.path}
               onClick={item.action}
-              className={`flex items-center gap-3 px-4 py-2 rounded-lg transition ${
-                location.pathname === item.path
-                  ? "bg-primary text-white font-semibold"
-                  : "hover:bg-base-200"
-              }`}
+              className={`flex items-center gap-3 px-4 py-2 rounded-lg transition ${location.pathname === item.path
+                ? "bg-primary text-white font-semibold"
+                : "hover:bg-base-200"
+                }`}
             >
               {item.icon}
               {item.name}

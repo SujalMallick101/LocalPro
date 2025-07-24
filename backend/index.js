@@ -7,6 +7,7 @@ const serviceRoutes = require("./routes/serviceRoutes");
 const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require("./routes/paymentRoutes")
 const reviewRoutes = require("./routes/reviewRoutes")
+const adminRoutes = require("./routes/adminRoutes");
 
 dotenv.config()
 
@@ -28,6 +29,7 @@ app.use("/api/services", serviceRoutes)
 app.use("/api/bookings", bookingRoutes)
 app.use("/api/payments", paymentRoutes)
 app.use("/api/reviews", reviewRoutes)
+app.use("/api/admin", adminRoutes);
 
 // Start server
 const PORT = process.env.PORT || 5000;

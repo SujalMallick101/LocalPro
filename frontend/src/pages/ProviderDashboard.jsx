@@ -89,9 +89,9 @@ const ProviderDashboard = () => {
             <Link to="/profile" className="btn btn-outline btn-accent btn-wide">
               Update Profile
             </Link>
-            <Link to="/services" className="btn btn-outline btn-info btn-wide">
+            {/* <Link to="/services" className="btn btn-outline btn-info btn-wide">
               Manage Services
-            </Link>
+            </Link> */}
           </div>
         </main>
       </div>

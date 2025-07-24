@@ -16,6 +16,10 @@ import BookService from "./pages/BookService";
 import Profile from "./pages/Profile";
 import Reviews from "./pages/Reviews";
 import MyJobs from "./pages/MyJobs";
+import ProviderReview from "./pages/ProviderReview";
+import AdminUsers from "./pages/AdminUsers";
+import AdminManageServices from "./pages/AdminManageServices";
+import AddService from "./pages/AddService";
 
 function App() {
   return (
@@ -45,11 +49,15 @@ function App() {
       <Route element={<PrivateRoute allowedRoles={["provider"]} />}>
         <Route path="/provider/dashboard" element={<ProviderDashboard />} />
         <Route path="/my-jobs" element={<MyJobs />} />
+        <Route path="/provider/reviews" element={<ProviderReview />} />
+        <Route path="/provider/add-service" element={<AddService />} />
       </Route>
 
       {/* Admin Dashboard */}
       <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/users" element={<AdminUsers />} />         // ✅ (to build next)
+        <Route path="/admin/services" element={<AdminManageServices />} />
       </Route>
     </Routes>
   );
