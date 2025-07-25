@@ -5,9 +5,9 @@ const bookingSchema = new mongoose.Schema(
     customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     providerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     serviceId: { type: mongoose.Schema.Types.ObjectId, ref: "Service", required: true },
-    subServiceName: { type: String, required: true },
+    subServiceName: { type: String, default: "" }, // 🛠️ changed from required:true
     scheduledDate: { type: Date, required: true },
-    scheduledTime: { type: String, required: true }, // e.g., "10:30 AM"
+    scheduledTime: { type: String, required: true },
     address: {
       street: String,
       city: String,

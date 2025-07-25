@@ -40,10 +40,10 @@ const LandingPage = () => {
               Get Started
             </Link>
 
-            <Link to="/explore" className="btn btn-outline btn-info btn-lg gap-2">
+            {/* <Link to="/explore" className="btn btn-outline btn-info btn-lg gap-2">
               <Search className="w-5 h-5" />
               Explore Providers
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

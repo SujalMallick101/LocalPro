@@ -1,45 +1,37 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
-import { Calendar, User, Star } from "lucide-react";
+import { Calendar, Star, MessageSquareText, User } from "lucide-react";
 
-const Reviews = () => {
+const MyReviews = () => {
   const { user } = useContext(AuthContext);
-  const [bookings, setBookings] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   if (!user) return <Navigate to="/login" />;
   if (user.role !== "customer") return <Navigate to="/" />;
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchMyReviews = async () => {
       try {
-        const { data } = await API.get("/bookings/my");
-        const filtered = data.filter(
-          (b) =>
-            b.status === "completed" &&
-            b.paymentStatus === "paid" &&
-            !b.reviewGiven
-        );
-        setBookings(filtered);
+        const { data } = await API.get("/reviews/my");
+        setReviews(data.reviews || []);
       } catch (err) {
         console.error("Error fetching reviews", err);
       }
     };
 
-    fetchBookings();
+    fetchMyReviews();
   }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-base-200">
-      {/* Navbar */}
       <header className="sticky top-0 z-50 bg-base-100 shadow-sm">
         <Navbar />
       </header>
 
-      {/* Layout */}
       <div className="flex flex-1 min-h-0">
         <aside className="w-64 hidden md:block bg-base-100 border-r border-base-300">
           <Sidebar />
@@ -48,46 +40,45 @@ const Reviews = () => {
         <main className="flex-1 py-10 px-4">
           <div className="max-w-4xl mx-auto bg-base-100 p-6 rounded-box shadow">
             <h2 className="text-3xl font-bold text-primary mb-6">
-              Pending Reviews
+              My Submitted Reviews
             </h2>
 
-            {bookings.length === 0 ? (
-              <p className="text-center text-gray-500">No reviews pending.</p>
+            {reviews.length === 0 ? (
+              <p className="text-center text-gray-500">You haven't submitted any reviews yet.</p>
             ) : (
               <div className="space-y-6">
-                {bookings.map((b) => (
+                {reviews.map((r) => (
                   <div
-                    key={b._id}
+                    key={r._id}
                     className="card bg-white shadow-md border border-base-300"
                   >
                     <div className="card-body space-y-2">
-                      {/* Title */}
-                      <h3 className="card-title text-lg text-primary">
-                        {b.serviceId?.name} - {b.subServiceName}
-                      </h3>
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-lg font-semibold text-primary">
+                          {r.bookingId?.subServiceName}
+                        </h3>
+                        <div className="flex items-center gap-1 text-yellow-500">
+                          <Star className="w-5 h-5 fill-current" />
+                          <span className="font-bold">{r.rating}</span>
+                        </div>
+                      </div>
 
-                      {/* Date */}
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <User className="w-4 h-4" />
+                        <span>{r.providerId?.name}</span>
+                      </div>
+
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="w-4 h-4" />
                         <span>
-                          {new Date(b.scheduledDate).toLocaleDateString()}
+                          {new Date(r.createdAt).toLocaleDateString()}
                         </span>
                       </div>
 
-                      {/* Provider */}
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <User className="w-4 h-4" />
-                        <span>{b.providerId?.name || "N/A"}</span>
+                      <div className="flex items-start gap-2 text-sm text-gray-700">
+                        <MessageSquareText className="w-4 h-4 mt-1" />
+                        <p>{r.comment}</p>
                       </div>
-
-                      {/* Leave Review Button */}
-                      <Link
-                        to={`/review/${b._id}`}
-                        className="btn btn-sm btn-outline btn-primary mt-2 flex items-center gap-2"
-                      >
-                        <Star className="w-4 h-4" />
-                        Leave Review
-                      </Link>
                     </div>
                   </div>
                 ))}
@@ -100,4 +91,4 @@ const Reviews = () => {
   );
 };
 
-export default Reviews;
+export default MyReviews;

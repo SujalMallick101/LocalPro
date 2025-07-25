@@ -1,19 +1,17 @@
-
-
 const mongoose = require("mongoose");
 
 const serviceSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true },
-    description: { type: String },
-    icon: { type: String }, // URL to image/icon
-    subServices: [
-      {
-        name: { type: String, required: true },
-        price: { type: Number, required: true },
-        duration: { type: String }, // e.g., "30 mins"
-      },
-    ],
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    providerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    isBlocked: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

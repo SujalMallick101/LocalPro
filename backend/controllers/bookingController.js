@@ -2,24 +2,29 @@ const Booking = require('../models/Bookings')
 
 //customer books a service
 exports.createBooking = async (req, res) => {
-    try {
-        const { providerId, serviceId, subServiceName, scheduledDate, scheduledTime, address } = req.body
-        const booking = await Booking.create({
-            customerId: req.user.userId,
-            providerId,
-            serviceId,
-            subServiceName,
-            scheduledDate,
-            scheduledTime,
-            address
-        })
-        res.status(201).json(booking)
-    }
-    catch (err) {
-        res.status(500).json({ message: "Booking failed", error: err });
-    }
+  try {
+    console.log("🔵 Booking Request Body:", req.body);
+    console.log("🔐 Authenticated User:", req.user);
 
-}
+    const { providerId, serviceId, subServiceName, scheduledDate, scheduledTime, address } = req.body;
+
+    const booking = await Booking.create({
+      customerId: req.user.userId,
+      providerId,
+      serviceId,
+      subServiceName,
+      scheduledDate,
+      scheduledTime,
+      address
+    });
+
+    res.status(201).json(booking);
+  } catch (err) {
+    console.error("❌ Booking Failed:", err);
+    res.status(500).json({ message: "Booking failed", error: err.message });
+  }
+};
+
 
 // Provider updates status
 exports.updateBookingStatus = async (req, res) => {

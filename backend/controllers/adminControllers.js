@@ -2,10 +2,13 @@ const User = require("../models/User");
 const Service = require("../models/Service");
 const Booking = require("../models/Bookings");
 
-// GET /admin/users
+// GET /admin/users?role=provider (optional query filtering)
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const { role } = req.query;
+    const filter = role ? { role } : {}; // If role query is present, apply filter
+
+    const users = await User.find(filter).select("-password");
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch users" });
@@ -26,7 +29,10 @@ exports.toggleUserStatus = async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.json({ message: `User ${isBlocked ? "blocked" : "unblocked"} successfully`, user });
+    res.json({
+      message: `User ${isBlocked ? "blocked" : "unblocked"} successfully`,
+      user,
+    });
   } catch (err) {
     res.status(500).json({ message: "Failed to update user status" });
   }
@@ -45,9 +51,10 @@ exports.getAdminStats = async (req, res) => {
   }
 };
 
+// GET /admin/services
 exports.getAllServices = async (req, res) => {
   try {
-    const services = await Service.find();
+    const services = await Service.find().populate("providerId", "name email");
     res.json(services);
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch services" });

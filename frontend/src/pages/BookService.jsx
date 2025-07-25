@@ -22,10 +22,11 @@ const BookService = () => {
   if (user.role !== "customer") return <Navigate to="/" />;
 
   const [services, setServices] = useState([]);
-  const [selectedService, setSelectedService] = useState("");
-  const [subServices, setSubServices] = useState([]);
-  const [selectedSubService, setSelectedSubService] = useState("");
   const [providers, setProviders] = useState([]);
+  const [filteredProviders, setFilteredProviders] = useState([]);
+
+  const [selectedService, setSelectedService] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [providerId, setProviderId] = useState("");
   const [scheduledDate, setScheduledDate] = useState("");
   const [scheduledTime, setScheduledTime] = useState("");
@@ -36,65 +37,84 @@ const BookService = () => {
     pincode: "",
   });
 
+  // Fetch services and providers
   useEffect(() => {
     const fetchServices = async () => {
-      const { data } = await API.get("/services");
-      setServices(data);
+      try {
+        const { data } = await API.get("/services");
+        setServices(data);
+      } catch (err) {
+        console.error("Failed to fetch services", err);
+      }
     };
 
     const fetchProviders = async () => {
-      const { data } = await API.get("/users?role=provider");
-      setProviders(data);
+      try {
+        const { data } = await API.get("/users?role=provider");
+        setProviders(data);
+      } catch (err) {
+        console.error("Failed to fetch providers", err);
+      }
     };
 
     fetchServices();
     fetchProviders();
   }, []);
 
+  // When user selects a service
   const handleServiceSelect = (serviceId) => {
-    const service = services.find((s) => s._id === serviceId);
     setSelectedService(serviceId);
-    setSubServices(service?.subServices || []);
-    setSelectedSubService("");
+    const selected = services.find((s) => s._id === serviceId);
+    if (selected) {
+      setSelectedCategory(selected.category || "");
+      const relevantProviders = providers.filter(
+        (p) => selected.providerId?._id === p._id
+      );
+      setFilteredProviders(relevantProviders);
+    } else {
+      setSelectedCategory("");
+      setFilteredProviders([]);
+    }
+    setProviderId("");
   };
 
+  // Submit Booking
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const payload = {
       providerId,
       serviceId: selectedService,
-      subServiceName: selectedSubService,
       scheduledDate,
       scheduledTime,
       address,
+      subServiceName: "", // Optional if you have subservices
     };
 
+    console.log("Booking Payload:", payload);
+
     try {
-      await API.post("/bookings", payload);
+      const res = await API.post("/bookings", payload);
+      console.log("Booking Success:", res.data);
       alert("Booking created!");
       navigate("/bookings");
     } catch (err) {
-      console.error(err);
-      alert("Failed to book service");
+      console.error("Booking Failed:", err);
+      alert(`Failed to book service: ${err?.response?.data?.message || err.message}`);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col bg-base-200">
-      {/* Navbar */}
       <header className="sticky top-0 z-50 bg-base-100 shadow-sm">
         <Navbar />
       </header>
 
-      {/* Sidebar + Content */}
       <div className="flex flex-1 min-h-0">
-        {/* Sidebar on left */}
         <aside className="w-64 hidden md:block bg-base-100 border-r border-base-300">
           <Sidebar />
         </aside>
 
-        {/* Main Booking Form */}
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-3xl mx-auto bg-base-100 rounded-xl shadow-md p-6">
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
@@ -112,6 +132,7 @@ const BookService = () => {
                 <select
                   className="select select-bordered w-full"
                   required
+                  value={selectedService}
                   onChange={(e) => handleServiceSelect(e.target.value)}
                 >
                   <option value="">Select a service</option>
@@ -123,26 +144,20 @@ const BookService = () => {
                 </select>
               </label>
 
-              {/* Sub-service */}
+              {/* Category (auto-filled) */}
               <label className="form-control w-full">
                 <div className="label">
                   <span className="label-text flex items-center gap-2">
-                    <Layers className="w-4 h-4" /> Sub-service
+                    <Layers className="w-4 h-4" /> Category
                   </span>
                 </div>
-                <select
-                  className="select select-bordered w-full"
-                  required
-                  onChange={(e) => setSelectedSubService(e.target.value)}
-                  value={selectedSubService}
-                >
-                  <option value="">Select a sub-service</option>
-                  {subServices.map((sub, i) => (
-                    <option key={i} value={sub.name}>
-                      {sub.name} - ₹{sub.price} ({sub.duration})
-                    </option>
-                  ))}
-                </select>
+                <input
+                  type="text"
+                  className="input input-bordered w-full"
+                  value={selectedCategory}
+                  disabled
+                  readOnly
+                />
               </label>
 
               {/* Provider */}
@@ -155,10 +170,11 @@ const BookService = () => {
                 <select
                   className="select select-bordered w-full"
                   required
+                  value={providerId}
                   onChange={(e) => setProviderId(e.target.value)}
                 >
                   <option value="">Select a provider</option>
-                  {providers.map((p) => (
+                  {filteredProviders.map((p) => (
                     <option key={p._id} value={p._id}>
                       {p.name} ({p.email})
                     </option>
@@ -166,7 +182,7 @@ const BookService = () => {
                 </select>
               </label>
 
-              {/* Date and Time */}
+              {/* Date & Time */}
               <div className="flex flex-col md:flex-row gap-4">
                 <label className="form-control w-full">
                   <div className="label">
@@ -178,6 +194,7 @@ const BookService = () => {
                     type="date"
                     className="input input-bordered w-full"
                     required
+                    value={scheduledDate}
                     onChange={(e) => setScheduledDate(e.target.value)}
                   />
                 </label>
@@ -192,6 +209,7 @@ const BookService = () => {
                     type="time"
                     className="input input-bordered w-full"
                     required
+                    value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
                   />
                 </label>
@@ -203,7 +221,7 @@ const BookService = () => {
                   <label className="form-control w-full" key={field}>
                     <div className="label">
                       <span className="label-text flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />{" "}
+                        <MapPin className="w-4 h-4" />
                         {field.charAt(0).toUpperCase() + field.slice(1)}
                       </span>
                     </div>
@@ -211,6 +229,7 @@ const BookService = () => {
                       type="text"
                       className="input input-bordered"
                       placeholder={`Enter ${field}`}
+                      value={address[field]}
                       onChange={(e) =>
                         setAddress({ ...address, [field]: e.target.value })
                       }

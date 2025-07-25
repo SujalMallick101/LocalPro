@@ -127,17 +127,17 @@ const MyBookings = () => {
                               Pay Now
                             </Link>
                           )}
-                          {b.status === "completed" &&
-                            b.paymentStatus === "paid" &&
-                            !b.reviewGiven && (
-                              <Link
-                                to={`/review/${b._id}`}
-                                className="btn btn-sm btn-outline btn-warning"
-                              >
-                                <Star className="w-4 h-4" />
-                                Leave Review
-                              </Link>
-                            )}
+
+                          {/* ✅ Review allowed after 'completed' status (even if payment is pending) */}
+                          {b.status === "completed" && !b.reviewGiven && (
+                            <Link
+                              to={`/review/${b._id}`}
+                              className="btn btn-sm btn-outline btn-warning"
+                            >
+                              <Star className="w-4 h-4" />
+                              Leave Review
+                            </Link>
+                          )}
                         </div>
                       )}
 

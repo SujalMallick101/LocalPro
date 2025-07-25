@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const { verifyToken, checkRole } = require("../middlewares/authMiddlewares");
+
 const {
   createService,
   getServices,
@@ -9,14 +11,14 @@ const {
   deleteService
 } = require("../controllers/serviceController");
 
-const { verifyToken, checkRole } = require("../middlewares/authMiddlewares");
-
 // Public Routes
 router.get("/", getServices);
 router.get("/:id", getServiceById);
 
-// Admin-Only Routes
-router.post("/", verifyToken, checkRole(["admin"]), createService);
+// Provider: Create Service
+router.post("/", verifyToken, checkRole(["provider"]), createService);
+
+// Admin: Update/Delete
 router.put("/:id", verifyToken, checkRole(["admin"]), updateService);
 router.delete("/:id", verifyToken, checkRole(["admin"]), deleteService);
 
